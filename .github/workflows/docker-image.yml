@@ -12,19 +12,20 @@ jobs:
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push mainline/alpine (Linux x86_64-v4)
         uses: docker/build-push-action@v5
         with:
           context: ./
           file: mainline-alpine.Dockerfile
           push: true
-          tags: docker.io/denji/nginx-boringssl:mainline-alpine
-          cache-from: type=registry,ref=docker.io/denji/nginx-boringssl:mainline-alpine
+          tags: ghcr.io/ivanjx/nginx-boringssl:mainline-alpine
+          cache-from: type=registry,ref=ghcr.io/ivanjx/nginx-boringssl:mainline-alpine
           cache-to: type=inline
       - name: Build and push stable/alpine (Linux x86_64-v4)
         uses: docker/build-push-action@v5
@@ -32,8 +33,8 @@ jobs:
           context: ./
           file: stable-alpine.Dockerfile
           push: true
-          tags: docker.io/denji/nginx-boringssl:stable-alpine
-          cache-from: type=registry,ref=docker.io/denji/nginx-boringssl:stable-alpine
+          tags: ghcr.io/ivanjx/nginx-boringssl:stable-alpine
+          cache-from: type=registry,ref=ghcr.io/ivanjx/nginx-boringssl:stable-alpine
           cache-to: type=inline
   build-qemu-arm64:
     runs-on: ubuntu-latest
@@ -44,11 +45,12 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push mainline/alpine (Linux AArch64 - ARMv8)
         uses: docker/build-push-action@v5
         with:
@@ -56,8 +58,8 @@ jobs:
           file: mainline-alpine.Dockerfile
           platforms: linux/arm64
           push: true
-          tags: docker.io/denji/nginx-boringssl:mainline-aarch64-alpine
-          cache-from: type=registry,ref=docker.io/denji/nginx-boringssl:mainline-aarch64-alpine
+          tags: ghcr.io/ivanjx/nginx-boringssl:mainline-aarch64-alpine
+          cache-from: type=registry,ref=ghcr.io/ivanjx/nginx-boringssl:mainline-aarch64-alpine
           cache-to: type=inline
       - name: Build and push stable/alpine (Linux AArch64 - ARMv8)
         uses: docker/build-push-action@v5
@@ -66,43 +68,43 @@ jobs:
           file: stable-alpine.Dockerfile
           platforms: linux/arm64
           push: true
-          tags: docker.io/denji/nginx-boringssl:stable-aarch64-alpine
-          cache-from: type=registry,ref=docker.io/denji/nginx-boringssl:stable-aarch64-alpine
+          tags: ghcr.io/ivanjx/nginx-boringssl:stable-aarch64-alpine
+          cache-from: type=registry,ref=ghcr.io/ivanjx/nginx-boringssl:stable-aarch64-alpine
           cache-to: type=inline
-  build-qemu-armv7:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push mainline/alpine (Linux ARMv7 - 32-bit)
-        uses: docker/build-push-action@v5
-        with:
-          context: ./
-          file: mainline-alpine.Dockerfile
-          platforms: linux/arm/v7
-          push: true
-          tags: docker.io/denji/nginx-boringssl:mainline-armv7-alpine
-          cache-from: type=registry,ref=docker.io/denji/nginx-boringssl:mainline-armv7-alpine
-          cache-to: type=inline
-      - name: Build and push stable/alpine (Linux ARMv7 - 32-bit)
-        uses: docker/build-push-action@v5
-        with:
-          context: ./
-          file: stable-alpine.Dockerfile
-          platforms: linux/arm/v7
-          push: true
-          tags: docker.io/denji/nginx-boringssl:stable-armv7-alpine
-          cache-from: type=registry,ref=docker.io/denji/nginx-boringssl:stable-armv7-alpine
-          cache-to: type=inline
+  # build-qemu-armv7:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check Out Repo
+  #       uses: actions/checkout@v4
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v3
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Build and push mainline/alpine (Linux ARMv7 - 32-bit)
+  #       uses: docker/build-push-action@v5
+  #       with:
+  #         context: ./
+  #         file: mainline-alpine.Dockerfile
+  #         platforms: linux/arm/v7
+  #         push: true
+  #         tags: docker.io/denji/nginx-boringssl:mainline-armv7-alpine
+  #         cache-from: type=registry,ref=docker.io/denji/nginx-boringssl:mainline-armv7-alpine
+  #         cache-to: type=inline
+  #     - name: Build and push stable/alpine (Linux ARMv7 - 32-bit)
+  #       uses: docker/build-push-action@v5
+  #       with:
+  #         context: ./
+  #         file: stable-alpine.Dockerfile
+  #         platforms: linux/arm/v7
+  #         push: true
+  #         tags: docker.io/denji/nginx-boringssl:stable-armv7-alpine
+  #         cache-from: type=registry,ref=docker.io/denji/nginx-boringssl:stable-armv7-alpine
+  #         cache-to: type=inline
   #build-qemu-armhf:
   #  runs-on: ubuntu-latest
   #  steps:

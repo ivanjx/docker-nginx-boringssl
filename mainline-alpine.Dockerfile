@@ -1,6 +1,7 @@
 FROM alpine:latest
 
 ENV NGINX_VERSION=1.25.4
+ENV BORINGSSL_COMMIT=e648990
 
 RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& CONFIG="\
@@ -109,7 +110,7 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& git clone --depth=1 https://github.com/openresty/headers-more-nginx-module /usr/src/ngx_headers_more \
 	&& hg clone http://hg.nginx.org/njs /usr/src/njs \
 	&& (git clone https://boringssl.googlesource.com/boringssl /usr/src/boringssl \
-		&& cd /usr/src/boringssl && git checkout --force --quiet e648990 \
+		&& cd /usr/src/boringssl && git checkout --force --quiet $BORINGSSL_COMMIT \
 		&& (grep -qxF 'SET_TARGET_PROPERTIES(crypto PROPERTIES SOVERSION 1)' /usr/src/boringssl/crypto/CMakeLists.txt || echo -e '\nSET_TARGET_PROPERTIES(crypto PROPERTIES SOVERSION 1)' >> /usr/src/boringssl/crypto/CMakeLists.txt) \
 		&& (grep -qxF 'SET_TARGET_PROPERTIES(ssl PROPERTIES SOVERSION 1)' /usr/src/boringssl/ssl/CMakeLists.txt || echo -e '\nSET_TARGET_PROPERTIES(ssl PROPERTIES SOVERSION 1)' >> /usr/src/boringssl/ssl/CMakeLists.txt) \
 		&& mkdir -p /usr/src/boringssl/build \
