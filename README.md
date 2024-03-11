@@ -2,21 +2,12 @@
 
 ### Docker image
 
-[![](https://img.shields.io/docker/automated/denji/nginx-boringssl.svg)](https://hub.docker.com/r/denji/nginx-boringssl/builds/) [![](https://img.shields.io/docker/pulls/denji/nginx-boringssl.svg)](https://hub.docker.com/r/denji/nginx-boringssl/) [![](https://img.shields.io/docker/stars/denji/nginx-boringssl.svg)](https://hub.docker.com/r/denji/nginx-boringssl/)
-
 [![Docker Image CI](https://github.com/nginx-modules/docker-nginx-boringssl/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nginx-modules/docker-nginx-boringssl/actions/workflows/docker-image.yml)
 
 ### Supported tags and respective `Dockerfile` links
 
-* Stable Release
-  - `docker.io/denji/nginx-boringssl:stable-alpine` - (Linux x86_64-v4)
-  - `docker.io/denji/nginx-boringssl:stable-aarch64-alpine` - (Linux AArch64 - ARMv8)
-  - `docker.io/denji/nginx-boringssl:stable-armv7-alpine` - (Linux ARMv7 - 32-bit)
-
 * Mainline Release
-  - `docker.io/denji/nginx-boringssl:mainline-alpine` - (Linux x86_64-v4)
-  - `docker.io/denji/nginx-boringssl:mainline-aarch64-alpine` - (Linux AArch64 - ARMv8)
-  - `docker.io/denji/nginx-boringssl:mainline-armv7-alpine` - (Linux ARMv7 - 32-bit)
+  - `ghcr.io/ivanjx/nginx-boringssl:mainline-alpine` - (Linux x86_64-v4 & AArch64 - ARMv8)
 
 #### Before you can use
 
