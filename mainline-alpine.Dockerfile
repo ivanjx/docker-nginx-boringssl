@@ -177,8 +177,8 @@ COPY conf/mainline/nginx.vh.no-default.conf /etc/nginx/conf.d/default.conf
 RUN APK_ARCH="$(cat /etc/apk/arch)"
 
 LABEL description="NGINX Docker built top of rolling release BoringSSL" \
-      maintainer="Denis Denisov <denji0k@gmail.com>" \
-      openssl="BoringSSL" \
+      maintainer="Ivan Kara" \
+      openssl="BoringSSL $BORINGSSL_COMMIT" \
       nginx="nginx $NGINX_VERSION" \
       arch="$APK_ARCH"
 
