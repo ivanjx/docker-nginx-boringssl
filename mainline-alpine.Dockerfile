@@ -3,7 +3,7 @@ FROM alpine:latest
 # https://nginx.org/en/download.html
 ENV NGINX_VERSION=1.25.4
 # https://boringssl.googlesource.com/boringssl/+log
-ENV BORINGSSL_COMMIT=e648990
+ENV BORINGSSL_COMMIT=29bb1a7
 
 RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& CONFIG="\
@@ -66,6 +66,7 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 		build-base \
 		ca-certificates \
 		cmake \
+		ninja-build \
 		curl \
 		gcc \
 		gd-dev \
@@ -113,11 +114,9 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& hg clone http://hg.nginx.org/njs /usr/src/njs \
 	&& (git clone https://boringssl.googlesource.com/boringssl /usr/src/boringssl \
 		&& cd /usr/src/boringssl && git checkout --force --quiet $BORINGSSL_COMMIT \
-		&& (grep -qxF 'SET_TARGET_PROPERTIES(crypto PROPERTIES SOVERSION 1)' /usr/src/boringssl/crypto/CMakeLists.txt || echo -e '\nSET_TARGET_PROPERTIES(crypto PROPERTIES SOVERSION 1)' >> /usr/src/boringssl/crypto/CMakeLists.txt) \
-		&& (grep -qxF 'SET_TARGET_PROPERTIES(ssl PROPERTIES SOVERSION 1)' /usr/src/boringssl/ssl/CMakeLists.txt || echo -e '\nSET_TARGET_PROPERTIES(ssl PROPERTIES SOVERSION 1)' >> /usr/src/boringssl/ssl/CMakeLists.txt) \
 		&& mkdir -p /usr/src/boringssl/build \
-		&& cmake -B/usr/src/boringssl/build -S/usr/src/boringssl -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-		&& make -C/usr/src/boringssl/build -j$(getconf _NPROCESSORS_ONLN) \
+		&& cmake -GNinja -B/usr/src/boringssl/build -S/usr/src/boringssl -DCMAKE_BUILD_TYPE=Release \
+		&& ninja -C/usr/src/boringssl/build \
 	   ) \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& curl -fSL https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.25.1%2B.patch -o dynamic_tls_records.patch \
