@@ -115,7 +115,7 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& (git clone https://boringssl.googlesource.com/boringssl /usr/src/boringssl \
 		&& cd /usr/src/boringssl && git checkout --force --quiet $BORINGSSL_COMMIT \
 		&& mkdir -p /usr/src/boringssl/build \
-		&& cmake -GNinja -B/usr/src/boringssl/build -S/usr/src/boringssl -DCMAKE_BUILD_TYPE=Release \
+		&& cmake -GNinja -B/usr/src/boringssl/build -S/usr/src/boringssl -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release \
 		&& ninja -C/usr/src/boringssl/build \
 	   ) \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
