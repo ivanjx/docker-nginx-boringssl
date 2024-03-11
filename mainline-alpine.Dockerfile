@@ -1,7 +1,9 @@
 FROM alpine:latest
 
+# https://nginx.org/en/download.html
 ENV NGINX_VERSION=1.25.4
-ENV BORINGSSL_COMMIT=e648990
+# https://boringssl.googlesource.com/boringssl/+log
+ENV BORINGSSL_COMMIT=29bb1a7
 
 RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& CONFIG="\
