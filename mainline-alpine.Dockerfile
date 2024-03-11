@@ -144,8 +144,6 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& install -m755 objs/ngx_http_perl_module-debug.so /usr/lib/nginx/modules/ngx_http_perl_module-debug.so \
 	&& install -m755 objs/ngx_stream_geoip_module-debug.so /usr/lib/nginx/modules/ngx_stream_geoip_module-debug.so \
 	&& ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
-	&& strip /usr/sbin/nginx* \
-	&& strip /usr/lib/nginx/modules/*.so \
 	&& rm -rf /usr/src/nginx-$NGINX_VERSION \
 	&& rm -rf /usr/src/boringssl /usr/src/ngx_* /usr/src/njs \
 	\
@@ -174,6 +172,8 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 
 COPY conf/mainline/nginx.conf /etc/nginx/nginx.conf
 COPY conf/mainline/nginx.vh.no-default.conf /etc/nginx/conf.d/default.conf
+
+RUN nginx -V; nginx -t
 
 RUN APK_ARCH="$(cat /etc/apk/arch)"
 
