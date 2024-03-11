@@ -117,8 +117,8 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 		&& mkdir -p /usr/src/boringssl/build \
 		&& cmake -GNinja -B/usr/src/boringssl/build -S/usr/src/boringssl -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release \
 		&& ninja -C/usr/src/boringssl/build \
-		&& cp /usr/src/boringssl/build/ssl/*.so /usr/bin \
-		&& cp /usr/src/boringssl/build/crypto/*.so /usr/bin \
+		&& cp /usr/src/boringssl/build/ssl/*.so /usr/local/lib \
+		&& cp /usr/src/boringssl/build/crypto/*.so /usr/local/lib \
 	   ) \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& ./configure $CONFIG --with-debug --with-cc-opt="-I/usr/src/boringssl/include" \
