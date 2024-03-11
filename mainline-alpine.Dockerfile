@@ -117,9 +117,11 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 		&& mkdir -p /usr/src/boringssl/build \
 		&& cmake -GNinja -B/usr/src/boringssl/build -S/usr/src/boringssl -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release \
 		&& ninja -C/usr/src/boringssl/build \
+		&& cp /usr/src/boringssl/build/ssl/*.so /usr/bin \
+		&& cp /usr/src/boringssl/build/crypto/*.so /usr/bin \
 	   ) \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
-	&& ./configure $CONFIG --with-debug --with-cc-opt="-I/usr/src/boringssl/include" --with-ld-opt="-L/usr/src/boringssl/build/ssl -L/usr/src/boringssl/build/crypto" \
+	&& ./configure $CONFIG --with-debug --with-cc-opt="-I/usr/src/boringssl/include" \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& mv objs/nginx objs/nginx-debug \
 	&& mv objs/ngx_http_xslt_filter_module.so objs/ngx_http_xslt_filter_module-debug.so \
@@ -127,7 +129,7 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& mv objs/ngx_http_geoip_module.so objs/ngx_http_geoip_module-debug.so \
 	&& mv objs/ngx_http_perl_module.so objs/ngx_http_perl_module-debug.so \
 	&& mv objs/ngx_stream_geoip_module.so objs/ngx_stream_geoip_module-debug.so \
-	&& ./configure $CONFIG --with-cc-opt="-I/usr/src/boringssl/include" --with-ld-opt="-L/usr/src/boringssl/build/ssl -L/usr/src/boringssl/build/crypto" \
+	&& ./configure $CONFIG --with-cc-opt="-I/usr/src/boringssl/include" \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& make install \
 	&& rm -rf /etc/nginx/html/ \
@@ -142,8 +144,6 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& install -m755 objs/ngx_http_perl_module-debug.so /usr/lib/nginx/modules/ngx_http_perl_module-debug.so \
 	&& install -m755 objs/ngx_stream_geoip_module-debug.so /usr/lib/nginx/modules/ngx_stream_geoip_module-debug.so \
 	&& ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
-	&& rm -rf /usr/src/nginx-$NGINX_VERSION \
-	&& rm -rf /usr/src/ngx_* /usr/src/njs \
 	\
 	# Bring in gettext so we can get `envsubst`, then throw
 	# the rest away. To do this, we need to install `gettext`
@@ -153,7 +153,7 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& mv /usr/bin/envsubst /tmp/ \
 	\
 	&& runDeps="$( \
-		scanelf --needed --nobanner /usr/sbin/nginx /usr/lib/nginx/modules/*.so /tmp/envsubst \
+		scanelf --needed --nobanner /usr/sbin/nginx /usr/lib/nginx/modules/*.so /usr/src/boringssl/build/ssl/*.so /usr/src/boringssl/build/crypto/*.so /tmp/envsubst \
 			| awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
 			| sort -u \
 			| xargs -r apk info --installed \
@@ -162,6 +162,8 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& apk add --no-cache --virtual .nginx-rundeps $runDeps \
 	&& apk del .build-deps \
 	&& apk del .gettext \
+	&& rm -rf /usr/src/nginx-$NGINX_VERSION \
+	&& rm -rf /usr/src/boringssl /usr/src/ngx_* /usr/src/njs \
 	&& mv /tmp/envsubst /usr/local/bin/ \
 	\
 	# forward request and error logs to docker log collector
