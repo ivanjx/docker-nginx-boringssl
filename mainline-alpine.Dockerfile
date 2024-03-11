@@ -66,7 +66,7 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 		build-base \
 		ca-certificates \
 		cmake \
-		ninja-build \
+		ninja \
 		curl \
 		gcc \
 		gd-dev \
