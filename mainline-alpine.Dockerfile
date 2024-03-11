@@ -121,6 +121,8 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 		&& cp /usr/src/boringssl/build/crypto/*.so /usr/local/lib \
 	   ) \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
+	&& curl -fSL https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.25.1%2B.patch -o dynamic_tls_records.patch \
+	&& patch -p1 < dynamic_tls_records.patch \
 	&& ./configure $CONFIG --with-debug --with-cc-opt="-I/usr/src/boringssl/include" \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& mv objs/nginx objs/nginx-debug \
@@ -153,7 +155,7 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& mv /usr/bin/envsubst /tmp/ \
 	\
 	&& runDeps="$( \
-		scanelf --needed --nobanner /usr/sbin/nginx /usr/lib/nginx/modules/*.so /usr/src/boringssl/build/ssl/*.so /usr/src/boringssl/build/crypto/*.so /tmp/envsubst \
+		scanelf --needed --nobanner /usr/sbin/nginx /usr/lib/nginx/modules/*.so /usr/local/lib/*.so /tmp/envsubst \
 			| awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
 			| sort -u \
 			| xargs -r apk info --installed \
