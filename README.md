@@ -2,7 +2,7 @@
 
 ### Docker image
 
-[![Docker Image CI](https://github.com/nginx-modules/docker-nginx-boringssl/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nginx-modules/docker-nginx-boringssl/actions/workflows/docker-image.yml)
+[![Docker Image CI](https://github.com/ivanjx/docker-nginx-boringssl/actions/workflows/docker-image.yml/badge.svg)](https://github.com/ivanjx/docker-nginx-boringssl/actions/workflows/docker-image.yml)
 
 ### Supported tags and respective `Dockerfile` links
 
